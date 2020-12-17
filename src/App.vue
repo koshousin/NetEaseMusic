@@ -1,23 +1,32 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+    <Header />
+    <LeftNavigation />
+    <router-view></router-view>
+    <Footer />
   </div>
 </template>
 
 <script>
-export default {
-  name: 'App'
-}
+
+  import Header from "./components/Header/Header";
+  import Footer from "./components/Footer/Footer";
+  import LeftNavigation from "./components/LeftNavigation/LeftNavigation";
+  export default {
+    name: 'App' ,
+    components : {
+      Header ,
+      Footer ,
+      LeftNavigation
+    }
+  }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="less">
+
+  #app {
+    width : 100%;
+    height : 100vh;
+    position : relative;
+  }
 </style>
