@@ -103,7 +103,7 @@
           </div>
           <div class="pop-item p-arrow">
             <span class="iconfont icon-guanji" ></span>
-            <span class="show-detail">退出登录</span>
+            <span class="show-detail" @click="logout">退出登录</span>
           </div>
         </div>
       </div>
@@ -133,7 +133,7 @@
       ...mapState(['navigationHistory','userInfo','userLevel'])
     } ,
     methods : {
-      ...mapActions(['getLogin' , 'getUserLevel']) ,
+      ...mapActions(['getLogin' , 'getUserLevel','getLogout']) ,
       switchPage(isBack){
         if(isBack){
           this.$router.back()
@@ -148,6 +148,9 @@
         let {phone , password} = this;
         // debugger
         this.getLogin({phone : +phone, password})
+      } ,
+      logout(){
+        this.getLogout()
       }
     }
   }

@@ -9,14 +9,22 @@
 
 <script>
   import Cookies from 'js-cookie'
+  import {mapState} from 'vuex'
   import RightHeader from "../../components/RightHeader/RightHeader";
   export default {
     name: "Main",
     components : {
       RightHeader
     } ,
+    computed : {
+      ...mapState(['userInfo'])
+    } ,
+    watch : {
+
+    } ,
     beforeMount() {
       this.$store.dispatch('getUserinfoByCookie')
+      this.userInfo['userId'] && this.$store.dispatch('getUserPlaylist')
     }
   }
 </script>

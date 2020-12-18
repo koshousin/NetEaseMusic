@@ -5,3 +5,6 @@ export const RECEIVE_USER_LEVEL = 'receive_user_level'        // 获取用户等
 export const RECEIVE_MUSIC_CATEGORY = 'receive_music_category'  // 获取音乐种类
 export const RECEIVE_HOT_MUSIC_CATEGORY = 'receive_hot_music_category'  // 获取热门歌曲种类
 export const RECEIVE_CURRENT_MUSIC_TAG = 'receive_current_music_tag'  // 接收当前选中的音乐种类
+export const RESET_USERINFO = 'reset_userinfo'     // 退出登录
+export const RECEIVE_USER_PLAYLIST = 'receive_user_playlist'            // 获取用户歌单名称
+export const RECEIVE_SHOW_PLAYLIST = 'receive_show_playlist'            // 歌单区域现实的歌单

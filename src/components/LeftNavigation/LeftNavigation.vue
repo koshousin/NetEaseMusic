@@ -2,74 +2,55 @@
   <!-- 左侧显示 -->
   <div class="main-left" >
     <div class="wrapper">
-      <ul class="content out-ul">
-        <li class="out-li active">发现音乐</li>
-        <li class="out-li">视频</li>
-        <li class="out-li">朋友</li>
-        <li class="out-li">直播</li>
-        <li class="out-li">私人FM</li>
-        <li class="caption"><span>我的音乐</span></li>
-        <li class="out-li">
-          <span class="iconfont icon-yinyue"></span>
-          <span>本地音乐</span>
-        </li>
-        <li class="out-li">
-          <span class="iconfont icon-xiazaiguanli"></span>
-          <span>下载管理</span>
-        </li>
-        <li class="out-li">
-          <span class="iconfont icon-ziyuan"></span>
-          <span>我的音乐云盘</span>
-        </li>
-        <li class="out-li">
-          <span class="iconfont icon-diantai"></span>
-          <span>我的电台</span>
-        </li>
-        <li class="out-li">
-          <span class="iconfont icon-wodeshoucang"></span>
-          <span>我的收藏</span>
-        </li>
-        <li class="caption">
-          <span>创建的歌单</span>
-        </li>
-        <li class="out-li">
-          <span class="iconfont icon-xinaixin"></span>
-          <span>我喜欢的音乐</span>
-        </li>
-        <li class="out-li">
-          <span class="iconfont icon-xiazaiguanli"></span>
-          <span>下载管理</span>
-        </li>
-        <li class="caption"><span>收藏的歌单</span></li>
-        </li>
-        <li class="out-li">
-          <span class="iconfont icon-gedan"></span>
-          <span>超好听的音乐(Aimyon最好听的50首歌）</span>
-        </li>
-        <li class="out-li">
-          <span class="iconfont icon-gedan"></span>
-          <span>中国新说唱</span>
-        </li>
-        <li class="out-li">
-          <span class="iconfont icon-yinyue"></span>
-          <span>本地音乐</span>
-        </li>
-        <li class="out-li">
-          <span class="iconfont icon-xiazaiguanli"></span>
-          <span>下载管理</span>
-        </li>
-        <li class="out-li">
-          <span class="iconfont icon-gedan"></span>
-          <span>中国新说唱</span>
-        </li>
-        <li class="out-li">
-          <span class="iconfont icon-yinyue"></span>
-          <span>本地音乐</span>
-        </li>
-        <li class="out-li">
-          <span class="iconfont icon-xiazaiguanli"></span>
-          <span>下载管理</span>
-        </li>
+      <ul>
+        <ul class="content out-ul">
+          <li class="out-li active">发现音乐</li>
+          <li class="out-li">视频</li>
+          <li class="out-li">朋友</li>
+          <li class="out-li">直播</li>
+          <li class="out-li">私人FM</li>
+          <li class="caption"><span>我的音乐</span></li>
+          <li class="out-li">
+            <span class="iconfont icon-yinyue"></span>
+            <span>本地音乐</span>
+          </li>
+          <li class="out-li">
+            <span class="iconfont icon-xiazaiguanli"></span>
+            <span>下载管理</span>
+          </li>
+          <li class="out-li">
+            <span class="iconfont icon-ziyuan"></span>
+            <span>我的音乐云盘</span>
+          </li>
+          <li class="out-li">
+            <span class="iconfont icon-diantai"></span>
+            <span>我的电台</span>
+          </li>
+          <li class="out-li">
+            <span class="iconfont icon-wodeshoucang"></span>
+            <span>我的收藏</span>
+          </li>
+        </ul>
+        <ul class="content out-ul">
+          <li class="caption"><span>创建的歌单</span></li>
+          <li class="out-li">
+            <span class="iconfont icon-xinaixin"></span>
+            <span>我喜欢的音乐</span>
+          </li>
+          <li class="out-li" :key="index"
+              v-for="(item , index) in userPlaylist.filter(el => el.userId === userInfo['userId'])">
+            <span class="iconfont icon-gedan"></span>
+            <span>{{item.name}}</span>
+          </li>
+        </ul>
+        <ul class="content out-ul">
+          <li class="caption"><span>收藏的歌单</span></li>
+          <li class="out-li" :key="index"
+              v-for="(item , index) in userPlaylist.filter(el => el.userId !== userInfo['userId'])">
+            <span class="iconfont icon-gedan"></span>
+            <span>{{item.name}}</span>
+          </li>
+        </ul>
       </ul>
     </div>
   </div>
@@ -77,9 +58,12 @@
 
 <script>
   import BScroll from "@better-scroll/core";
-
+  import {mapState} from 'vuex'
   export default {
     name: "LeftNavigation" ,
+    computed : {
+      ...mapState(['userInfo',"userPlaylist"])
+    } ,
     mounted() {
       let wrapper = document.querySelector('.wrapper')
       let bs = new BScroll(wrapper,{
@@ -93,9 +77,11 @@
         click : true ,
         preventDefault : true
       })
-
-      // this.$store.dispatch('getBanners')
-
+    } ,
+    watch : {
+      userInfo (){
+        this.$store.dispatch('getUserPlaylist')
+      }
     }
   }
 </script>
@@ -128,6 +114,7 @@
         white-space: nowrap;
       }
       .out-li{
+        color : rgb(76,76,76);
         .iconfont {
           font-size : 20px;
         }

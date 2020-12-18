@@ -1,6 +1,6 @@
 <template>
   <!-- 歌单样式 -->
-  <div class="main-right">
+  <div class="main-right" >
     <div class="main-content">
       <div class="music-list-container">
         <!-- 歌单头部大图 -->
@@ -43,58 +43,37 @@
         </div>
         <!-- 歌单列表 -->
         <div class="music-list">
-          <div class="music-item">
-            <img src="../../assets/cat.jpg" alt="">
+          <div class="music-item" v-for="(music , index) in showPlaylist" :key="index">
+            <img :src="music['coverImgUrl']" alt="">
+            <span class="play-count">
+                <i class="iconfont icon-bofang"></i>{{music['playCount']/10000 > 10 ? Math.floor(music['playCount']/10000) + '万' : music['playCount'] }}
+            </span>
             <span class="iconfont icon-bofang2 play-now"></span>
             <span class="upload-info">
             <i class="iconfont icon-yonghu"></i>
-            <span>Koshousin</span>
+            <span>{{music.creator.nickname}}</span>
             <i class="iconfont icon-vip"></i>
           </span>
             <div class="music-desc">
-              这是你最不喜欢听的歌asdfadfsdfsdfasdfasdasdfsdfsdfsdfasdffasdfawdsf
+              {{music.name}}
             </div>
           </div>
-          <div class="music-item">
-            <img src="../../assets/cat.jpg" alt="">
-            <span class="iconfont icon-bofang2 play-now"></span>
-            <span class="upload-info">
-            <i class="iconfont icon-yonghu"></i>
-            <span>Koshousin</span>
-            <i class="iconfont icon-vip"></i>
-        </span>
-            <div class="music-desc">这是你最不喜欢听的歌</div>
-          </div>
-          <div class="music-item">
-            <img src="../../assets/cat.jpg" alt="">
-            <span class="iconfont icon-bofang2 play-now"></span>
-            <span class="upload-info">
-            <i class="iconfont icon-yonghu"></i>
-            <span>Koshousin</span>
-            <i class="iconfont icon-vip"></i>
-        </span>
-            <div class="music-desc">这是你最不喜欢听的歌</div>
-          </div>
-          <div class="music-item">
-            <img src="../../assets/cat.jpg" alt="">
-            <span class="iconfont icon-bofang2 play-now"></span>
-            <span class="upload-info">
-            <i class="iconfont icon-yonghu"></i>
-            <span>Koshousin</span>
-            <i class="iconfont icon-vip"></i>
-        </span>
-            <div class="music-desc">这是你最不喜欢听的歌</div>
-          </div>
-          <div class="music-item">
-            <img src="../../assets/cat.jpg" alt="">
-            <span class="iconfont icon-bofang2 play-now"></span>
-            <span class="upload-info">
-            <i class="iconfont icon-yonghu"></i>
-            <span>Koshousin</span>
-            <i class="iconfont icon-vip"></i>
-        </span>
-            <div class="music-desc">这是你最不喜欢听的歌</div>
-          </div>
+
+        </div>
+        <!-- 歌单页码显示 -->
+        <div class="music-page" @click="changePage">
+          <span class="iconfont icon-houtuishangyige"></span>
+          <span :class="firstPageActive && 'active' ">1</span>
+          <span>2</span>
+          <span>3</span>
+          <span>4</span>
+          <span>5</span>
+          <span>6</span>
+          <span>7</span>
+          <span>8</span>
+          <span>9</span>
+          <span>10</span>
+          <span class="iconfont icon-qianjin"></span>
         </div>
       </div>
     </div>
@@ -108,15 +87,18 @@ export default {
   name: "SongList" ,
   data(){
     return {
+      // currentTagName : '全部歌单' ,
+      currentPage : 1 ,
+      firstPageActive : true ,
       isShow : false ,
       iconfontClass : ['icon-yuzhong','icon-fengge26','icon-changjing','icon-qinggan1','icon-zhuti']     // 语种 ， 风格 ，场景 ， 情感 ， 主题
     }
   } ,
   computed : {
-    ...mapState(['musicCategory','hotMusicCategory','currentMusicTag'])
+    ...mapState(['musicCategory','hotMusicCategory','currentMusicTag','showPlaylist'])
   } ,
   methods: {
-    ...mapActions(['getMusicCategory' , 'getHotMusicCategory','updateCurrentMusicTag']) ,
+    ...mapActions(['getMusicCategory' , 'getHotMusicCategory','updateCurrentMusicTag','getShowPlaylist']) ,
     showMusicCategory () {
       this.isShow = !this.isShow
     } ,
@@ -125,12 +107,39 @@ export default {
         let name = e.target.innerText
         console.log(e.target)
         this.updateCurrentMusicTag(name)
+        this.getShowPlaylist()
+      }
+    } ,
+    /* 改变页码 */
+    changePage(e){
+      this.firstPageActive = false
+      if(e.target.innerText){
+        if(this.selectedSpan && e.target.nodeName==='SPAN'){
+          console.log(this.selectedSpan.nodeName)
+          this.selectedSpan.className = ''
+        }
+        if(e.target.nodeName === 'SPAN'){
+          this.selectedSpan = e.target
+          e.target.className = 'active'
+        }
+        this.currentPage = e.target.innerText * 1
+        // 发送获取歌单请求
+        // 为防止用户多次点击，使用函数节流
+        this.getShowPlaylist(e.target.innerText)
       }
     }
   } ,
   beforeMount() {
     this.getHotMusicCategory()
     this.getMusicCategory()
+    this.getShowPlaylist()
+  } ,
+  watch : {
+    // 当选择的标签名改变时上一次的高亮，并默认将第一个页码高亮
+     currentMusicTag(){
+       this.firstPageActive = true
+       this.selectedSpan.className = ''
+     }
   }
 }
 </script>
@@ -144,6 +153,7 @@ export default {
     display  : flex;
     flex-direction : column;
     align-items: center;
+    padding-bottom : 216px;
     // 歌单头部大图
     .header-banner {
       position : relative;
@@ -310,10 +320,11 @@ export default {
                 color : @mainColor;
               }
               .active {
-
                 height : 35px;
                 padding : 0 16px;
                 left : -10px;
+                position : absolute;
+                // 添加背景选中样式
                 &::after {
                   content : '' ;
                   position : absolute;
@@ -326,7 +337,6 @@ export default {
                   border-radius : 17px;
                 }
               }
-
             }
           }
         }
@@ -347,6 +357,17 @@ export default {
           width : 230px;
           height :230px;
           border-radius : 8px;
+        }
+        .play-count {
+          position : absolute;
+          right : 6%;
+          top : 3%;
+          color : #fff;
+          font-size : 13px;
+          i {
+            font-size : 11px ;
+            margin-right : 5px;
+          }
         }
         .upload-info {
           position : absolute;
@@ -372,6 +393,35 @@ export default {
         &:hover , &:hover .play-now {
           opacity : 1;
           cursor : pointer ;
+        }
+      }
+    }
+    // 歌曲页码样式
+    .music-page {
+      display : flex;
+      margin-top : 20px;
+      span {
+        line-height: 30px;
+        width : 30px;
+        text-align : center;
+        margin : 0 3px;
+        border : 1px solid rgb(230,230,230);
+        border-radius : 5px;
+        color : rgb(103,103,103);
+        &:hover {
+          cursor : pointer;
+          background-color : rgb(253,245,245);
+        }
+      }
+      .iconfont {
+        color : rgb(203,203,203);
+      }
+      .active {
+        color : #fff;
+        background-color :@mainColor;
+        &:hover {
+          cursor: auto;
+          background-color : @mainColor;
         }
       }
     }

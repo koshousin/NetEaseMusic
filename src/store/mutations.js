@@ -8,7 +8,10 @@ import {
   RECEIVE_USER_LEVEL ,
   RECEIVE_MUSIC_CATEGORY ,
   RECEIVE_HOT_MUSIC_CATEGORY ,
-  RECEIVE_CURRENT_MUSIC_TAG
+  RECEIVE_CURRENT_MUSIC_TAG ,
+  RESET_USERINFO ,
+  RECEIVE_USER_PLAYLIST ,
+  RECEIVE_SHOW_PLAYLIST
 } from './mutation-types'
 
 export default {
@@ -35,5 +38,14 @@ export default {
   } ,
   [RECEIVE_CURRENT_MUSIC_TAG] (state , {name}) {
     state.currentMusicTag = name
+  } ,
+  [RESET_USERINFO] (state){
+    state.userInfo = {}
+  } ,
+  [RECEIVE_USER_PLAYLIST] (state , {playlist}) {
+    state.userPlaylist = playlist
+  } ,
+  [RECEIVE_SHOW_PLAYLIST] (state , {playlist}) {
+    state.showPlaylist = playlist
   }
 }

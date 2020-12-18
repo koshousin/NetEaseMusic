@@ -10,7 +10,10 @@ import {
   RECEIVE_USER_LEVEL ,
   RECEIVE_MUSIC_CATEGORY ,
   RECEIVE_HOT_MUSIC_CATEGORY ,
-  RECEIVE_CURRENT_MUSIC_TAG
+  RECEIVE_CURRENT_MUSIC_TAG ,
+  RESET_USERINFO ,
+  RECEIVE_USER_PLAYLIST ,
+  RECEIVE_SHOW_PLAYLIST
 } from './mutation-types'
 
 export default {
@@ -100,6 +103,37 @@ export default {
     if(result.code === 200){
       const hotCategory = result.tags
       commit(RECEIVE_HOT_MUSIC_CATEGORY , {hotCategory})
+    }
+  } ,
+  // 用户登出
+  async getLogout({commit}){
+    const result = await request.reqLogout()
+    if(result.code === 200){
+      commit(RESET_USERINFO)
+    }
+  } ,
+  // 获取用户歌单名称
+  async getUserPlaylist({commit , state}){
+    if(!state.userInfo['userId']){
+      return
+    }
+    const result = await request.reqUserPlayList(state.userInfo['userId'])
+    if(result.code === 200){
+      const {playlist}= result
+      commit(RECEIVE_USER_PLAYLIST , {playlist})
+    }
+  } ,
+  // 获取要显示的歌单
+  async getShowPlaylist ({commit , state}  , page=1){
+    let cat = state.currentMusicTag
+    if(cat === '全部歌单'){
+      cat = '全部'
+    }
+    let offset = (+page-1) * 100
+    const result = await request.reqShowPlaylist(cat , offset )
+    if(result.code === 200){
+      const playlist = result['playlists']
+      commit(RECEIVE_SHOW_PLAYLIST , {playlist})
     }
   }
 }
