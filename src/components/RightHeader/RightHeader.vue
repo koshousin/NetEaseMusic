@@ -2,17 +2,17 @@
   <div class="right-header">
     <div class="header-inner" @click="changeRecommend">
       <span data-desc="personal" class="header-items"
-            :class="this.$route.path === '/main/personal' ? 'active' : '' " >个性推荐</span>
+            :class="this.$route.path === '/discover/personal' ? 'active' : '' " >个性推荐</span>
       <span data-desc="songlist" class="header-items"
-            :class="this.$route.path  === '/main/songlist' ? 'active' : '' ">歌单</span>
+            :class="this.$route.path  === '/discover/songlist' ? 'active' : '' ">歌单</span>
       <span data-desc="anchorradio" class="header-items"
-            :class="this.$route.path  === '/main/anchorradio' ? 'active' : '' ">主播电台</span>
+            :class="this.$route.path  === '/discover/anchorradio' ? 'active' : '' ">主播电台</span>
       <span data-desc="ranklist" class="header-items"
-            :class="this.$route.path  === '/main/ranklist' ? 'active' : '' ">排行榜</span>
+            :class="this.$route.path  === '/discover/ranklist' ? 'active' : '' ">排行榜</span>
       <span data-desc="artist" class="header-items"
-            :class="this.$route.path  === '/main/artist' ? 'active' : '' ">歌手</span>
+            :class="this.$route.path  === '/discover/artist' ? 'active' : '' ">歌手</span>
       <span data-desc="latestmusic" class="header-items"
-            :class="this.$route.path  === '/main/latestmusic' ? 'active' : '' ">最新音乐</span>
+            :class="this.$route.path  === '/discover/latestmusic' ? 'active' : '' ">最新音乐</span>
     </div>
   </div>
 </template>
@@ -34,8 +34,8 @@
         if(e.target.dataset.desc) {
           if(this.selected !==  e.target.dataset.desc){   // 当不等于当前路由才会执行以下代码
             this.selected = e.target.dataset.desc
-            this.$router.push(`/main/${this.selected}`)
-            this.$store.dispatch('updateNavigationHistory',{history:`/main/${this.selected}`})
+            this.$router.push(`/discover/${this.selected}`)
+            // this.$store.dispatch('updateNavigationHistory',{history:`/discover/${this.selected}`})
           }
         }
       }

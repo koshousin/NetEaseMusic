@@ -1,93 +1,81 @@
 <template>
   <!-- 歌单样式 -->
-  <div class="main-right" >
-    <div class="main-content">
-      <div class="music-list-container">
-        <!-- 歌单头部大图 -->
-        <div class="header-banner">
-          <div class="cloak"></div>
-          <img src="../../assets/v2-63007b99834ff84efe411ba8fd3f240c_hd.jpg" alt="">
-          <div class="banner-desc">
-            <p class="special-list"><i class="iconfont icon-huiyuan"></i>精品歌单</p>
-            <p class="title">Acoustic | 人生最好的境界是丰富的安静</p>
-            <p class="subtitle">这些好听的不插电曲目有没有进入你的内心呢</p>
-          </div>
-        </div>
-        <!-- 音乐类别 -->
-        <div class="music-list-category" @click="changeMusicTag">
-          <span class="all-list" @click="showMusicCategory">{{currentMusicTag}}</span>
-          <span class="music-type">
-            <span data-symbol="tag" :class="item.name === currentMusicTag && 'active'" v-for="(item , index) in hotMusicCategory" :key="index">{{item.name}}</span>
-          </span>
-          <!-- 音乐类型下拉列表 -->
-          <div class="music-category-downlist" v-show="isShow" >
-            <div class="title">
-              <span data-symbol="tag">全部歌单</span>
-            </div>
-            <div class="sub-title" v-for="(item , index) in musicCategory" :key="index">
-              <div class="type">
-                <i class="iconfont" :class="iconfontClass[item.num]"></i>
-                <span>{{item.category}}</span>
-              </div>
-              <div class="type-items">
-                <span data-symbol="tag" class="item" v-for="(type , index) in item.types" :key="index">
-                  <span data-symbol="tag" style="position : absolute" :class="type.name === currentMusicTag && 'active' ">
-                      {{type.name}}
-                    <i style="position : absolute ; color : rgb(236,65,65); font-size : 11px; right : -13px "
-                       class="iconfont" :class="type.hot && 'icon-hot' "></i>
-                  </span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- 歌单列表 -->
-        <div class="music-list">
-          <div class="music-item" v-for="(music , index) in showPlaylist" :key="index">
-            <img :src="music['coverImgUrl']" alt="">
-            <span class="play-count">
-                <i class="iconfont icon-bofang"></i>{{music['playCount']/10000 > 10 ? Math.floor(music['playCount']/10000) + '万' : music['playCount'] }}
-            </span>
-            <span class="iconfont icon-bofang2 play-now"></span>
-            <span class="upload-info">
-            <i class="iconfont icon-yonghu"></i>
-            <span>{{music.creator.nickname}}</span>
-            <i class="iconfont icon-vip"></i>
-          </span>
-            <div class="music-desc">
-              {{music.name}}
-            </div>
-          </div>
-
-        </div>
-        <!-- 歌单页码显示 -->
-        <div class="music-page" @click="changePage">
-          <span class="iconfont icon-houtuishangyige"></span>
-          <span :class="firstPageActive && 'active' ">1</span>
-          <span>2</span>
-          <span>3</span>
-          <span>4</span>
-          <span>5</span>
-          <span>6</span>
-          <span>7</span>
-          <span>8</span>
-          <span>9</span>
-          <span>10</span>
-          <span class="iconfont icon-qianjin"></span>
+    <div class="music-list-container">
+      <div class="loading" v-if="!showPlaylist || !showPlaylist.length">
+        <img src="./img/anna-loading.gif" alt="">
+      </div>
+      <!-- 歌单头部大图 -->
+      <div class="header-banner">
+        <div class="cloak"></div>
+        <img src="../../assets/v2-63007b99834ff84efe411ba8fd3f240c_hd.jpg" alt="">
+        <div class="banner-desc">
+          <p class="special-list"><i class="iconfont icon-huiyuan"></i>精品歌单</p>
+          <p class="title">Acoustic | 人生最好的境界是丰富的安静</p>
+          <p class="subtitle">这些好听的不插电曲目有没有进入你的内心呢</p>
         </div>
       </div>
+      <!-- 音乐类别 -->
+      <div class="music-list-category" @click="changeMusicTag">
+        <span class="all-list" @click="showMusicCategory">{{currentMusicTag}}</span>
+        <span class="music-type">
+          <span data-symbol="tag" :class="item.name === currentMusicTag && 'active'" v-for="(item , index) in hotMusicCategory" :key="index">{{item.name}}</span>
+        </span>
+        <!-- 音乐类型下拉列表 -->
+        <div class="music-category-downlist" v-show="isShow" >
+          <div class="title">
+            <span data-symbol="tag">全部歌单</span>
+          </div>
+          <div class="sub-title" v-for="(item , index) in musicCategory" :key="index">
+            <div class="type">
+              <i class="iconfont" :class="iconfontClass[item.num]"></i>
+              <span>{{item.category}}</span>
+            </div>
+            <div class="type-items">
+              <span data-symbol="tag" class="item" v-for="(type , index) in item.types" :key="index">
+                <span data-symbol="tag" style="position : absolute" :class="type.name === currentMusicTag && 'active' ">
+                    {{type.name}}
+                  <i style="position : absolute ; color : rgb(236,65,65); font-size : 11px; right : -13px "
+                     class="iconfont" :class="type.hot && 'icon-hot' "></i>
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 歌单列表 -->
+      <div class="music-list" @click="showListDetail">
+        <div class="music-item" v-for="(music , index) in showPlaylist" :key="index" >
+          <img v-lazy="music['coverImgUrl']" alt="" :data-id="music.id">
+          <span class="play-count">
+              <i class="iconfont icon-bofang"></i>{{music['playCount'] | countFormat}}
+          </span>
+          <span class="iconfont icon-bofang2 play-now"></span>
+          <span class="upload-info">
+          <i class="iconfont icon-yonghu"></i>
+          <span>{{music.creator.nickname}}</span>
+          <i class="iconfont icon-vip"></i>
+        </span>
+          <div class="music-desc">
+            {{music.name}}
+          </div>
+        </div>
+      </div>
+      <!-- 歌单页码显示 -->
+      <PageCount @handle_pagecount_click="handlePageCountClick" pageCount=10 />
     </div>
-  </div>
-
 </template>
 
 <script>
 import {mapState , mapActions} from 'vuex'
+import PageCount from "../../components/PageCount/PageCount";
 export default {
   name: "SongList" ,
+  props : ['wrapContainer'] ,
+  components : {
+    PageCount
+  } ,
   data(){
     return {
-      // currentTagName : '全部歌单' ,
       currentPage : 1 ,
       firstPageActive : true ,
       isShow : false ,
@@ -110,22 +98,16 @@ export default {
         this.getShowPlaylist()
       }
     } ,
-    /* 改变页码 */
-    changePage(e){
-      this.firstPageActive = false
-      if(e.target.innerText){
-        if(this.selectedSpan && e.target.nodeName==='SPAN'){
-          console.log(this.selectedSpan.nodeName)
-          this.selectedSpan.className = ''
-        }
-        if(e.target.nodeName === 'SPAN'){
-          this.selectedSpan = e.target
-          e.target.className = 'active'
-        }
-        this.currentPage = e.target.innerText * 1
-        // 发送获取歌单请求
-        // 为防止用户多次点击，使用函数节流
-        this.getShowPlaylist(e.target.innerText)
+    handlePageCountClick(value){
+      this.getShowPlaylist(value)
+      this.$emit('back_to_top')
+    } ,
+    // 显示歌单详情
+    showListDetail (e){
+      let id = e.target.dataset.id;
+      console.log(id)
+      if(id){
+        this.$router.push('/songlistdetail/' + id )
       }
     }
   } ,
@@ -134,13 +116,7 @@ export default {
     this.getMusicCategory()
     this.getShowPlaylist()
   } ,
-  watch : {
-    // 当选择的标签名改变时上一次的高亮，并默认将第一个页码高亮
-     currentMusicTag(){
-       this.firstPageActive = true
-       this.selectedSpan.className = ''
-     }
-  }
+
 }
 </script>
 
@@ -154,6 +130,12 @@ export default {
     flex-direction : column;
     align-items: center;
     padding-bottom : 216px;
+    .loading {
+      height : 100vh;
+      img {
+        border-radius : 20px;
+      }
+    }
     // 歌单头部大图
     .header-banner {
       position : relative;
@@ -396,35 +378,5 @@ export default {
         }
       }
     }
-    // 歌曲页码样式
-    .music-page {
-      display : flex;
-      margin-top : 20px;
-      span {
-        line-height: 30px;
-        width : 30px;
-        text-align : center;
-        margin : 0 3px;
-        border : 1px solid rgb(230,230,230);
-        border-radius : 5px;
-        color : rgb(103,103,103);
-        &:hover {
-          cursor : pointer;
-          background-color : rgb(253,245,245);
-        }
-      }
-      .iconfont {
-        color : rgb(203,203,203);
-      }
-      .active {
-        color : #fff;
-        background-color :@mainColor;
-        &:hover {
-          cursor: auto;
-          background-color : @mainColor;
-        }
-      }
-    }
   }
-
 </style>

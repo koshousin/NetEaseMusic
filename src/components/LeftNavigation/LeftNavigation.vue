@@ -2,9 +2,9 @@
   <!-- 左侧显示 -->
   <div class="main-left" >
     <div class="wrapper">
-      <ul>
+      <ul >
         <ul class="content out-ul">
-          <li class="out-li active">发现音乐</li>
+          <li class="out-li active" @click="$router.push('/discover')">发现音乐</li>
           <li class="out-li">视频</li>
           <li class="out-li">朋友</li>
           <li class="out-li">直播</li>
@@ -31,21 +31,17 @@
             <span>我的收藏</span>
           </li>
         </ul>
-        <ul class="content out-ul">
+        <ul class="content out-ul" @click="toSongListDetail">
           <li class="caption"><span>创建的歌单</span></li>
-          <li class="out-li">
-            <span class="iconfont icon-xinaixin"></span>
-            <span>我喜欢的音乐</span>
-          </li>
-          <li class="out-li" :key="index"
+          <li class="out-li" :key="index" :data-id="item.id"
               v-for="(item , index) in userPlaylist.filter(el => el.userId === userInfo['userId'])">
             <span class="iconfont icon-gedan"></span>
             <span>{{item.name}}</span>
           </li>
         </ul>
-        <ul class="content out-ul">
+        <ul class="content out-ul" @click="toSongListDetail">
           <li class="caption"><span>收藏的歌单</span></li>
-          <li class="out-li" :key="index"
+          <li class="out-li" :key="index" :data-id="item.id"
               v-for="(item , index) in userPlaylist.filter(el => el.userId !== userInfo['userId'])">
             <span class="iconfont icon-gedan"></span>
             <span>{{item.name}}</span>
@@ -57,7 +53,6 @@
 </template>
 
 <script>
-  import BScroll from "@better-scroll/core";
   import {mapState} from 'vuex'
   export default {
     name: "LeftNavigation" ,
@@ -65,24 +60,17 @@
       ...mapState(['userInfo',"userPlaylist"])
     } ,
     mounted() {
-      let wrapper = document.querySelector('.wrapper')
-      let bs = new BScroll(wrapper,{
-        probeType : 1 ,
-        scrollY : true ,
-        bounce : {
-          top : true ,
-          bottom : true
-        } ,
-        mouseWheel : true ,
-        click : true ,
-        preventDefault : true
-      })
     } ,
-    watch : {
-      userInfo (){
-        this.$store.dispatch('getUserPlaylist')
-      }
-    }
+    methods : {
+      toSongListDetail (e){
+        // console.log(e.target.parentNode.nodeName ,e.target.dataset.id)
+        if(e.target.parentNode.nodeName === 'LI' || e.target.nodeName === 'LI'){
+          let id = e.target.parentNode.dataset.id || e.target.dataset.id
+          id && this.$router.push('/songlistdetail/' + id)
+        }
+      } ,
+
+    } ,
   }
 </script>
 

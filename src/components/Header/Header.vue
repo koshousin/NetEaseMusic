@@ -4,7 +4,7 @@
     <!-- 头部左边 -->
     <div class="header-left">
       <span class="iconfont logo icon-wangyiyunyinle"></span>
-      <span class="app-name">网易云音乐</span>
+      <span class="app-name">黄山云音乐</span>
       <div class="header-control">
         <span class="iconfont direction houtui icon-houtuishangyige"
               @click="switchPage(true)"

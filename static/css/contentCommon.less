@@ -12,7 +12,7 @@
     margin: 0 auto;
   }
 }
-// hover 歌单时显示的播放按钮
+// hover 歌单时显示的播放按钮右下的样式
 .play-now {
   position: absolute;
   top : 60%;
@@ -27,4 +27,23 @@
   line-height : 30px;
   opacity : 0;
   transition : .5s ease-in-out;
+}
+//  悬浮显示播放的按钮居中样式
+.play-key {
+  position : absolute;
+  transform: translate(-50%,-50%);
+  top : 50%;
+  left : 50%;
+  color : @mainColor;
+  background-color : rgb(250,246,238);
+  width : 50px;
+  height : 50px;
+  line-height : 50px;
+  text-align : center;
+  border-radius : 50%;
+  opacity : 0;
+  transition : .3s;
+  .iconfont {
+    font-size : 25px;
+  }
 }
